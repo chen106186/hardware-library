@@ -1,32 +1,23 @@
 <template>
   <div class="home">
-    <div class="homeScript">
+    <h3 class="homeScript">
       Welcome to the Computer Science Hardware Library<br /><br />
       You will be able to see your reserved and collected items below, propose new items and look through our list of
       components to reserve what you may wish.
-    </div>
+    </h3>
     <div class="homeSearch">
       <h3>Components<br /></h3>
-      <el-input v-model="input" @input="doSearch" placeholder="Components"></el-input>
-      <div class="homeComponents">
-        <el-collapse v-model="activeNames" @change="handleChange" width="1000">
-          <el-collapse-item v-for="(item, index) in collapseList" :key="index" :name="item.title" :title="item.title">
-            <el-table border :data="item.tableData" style="width: 100%;" stripe>
-              <el-table-column prop="name" label="Name">
-                <template slot-scope="scope">
-                  <span class="row-link" @click="goDetail(scope.row)">{{ scope.row.name }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="available" label="Available" width="120">
-              </el-table-column>
-              <el-table-column prop="image" label="Image" width="120">
-                <template slot-scope="scope">
-                  <img class="row-img" :src="scope.row.image">
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-collapse-item>
-        </el-collapse>
+      <div class="filter">
+        <el-select v-model="category" @change="filterList">
+          <el-option v-for="item in categoryList" :key="item.id" :value="item.id" :label="item.name">
+          </el-option>
+        </el-select>
+        <el-input v-model="input" placeholder="Components"></el-input>
+        <el-button type="success" size="mini" @click="doSearch">search</el-button>
+      </div>
+      <div class="homeComponents" :style="{ '--grid': gridCount }" v-loading="loading">
+        <InfoCard v-for="(item, index) in dataList" :key="index" :info="item" @show="showDetail" />
+        <el-empty v-if="dataList && !dataList.length" description="No Results"></el-empty>
       </div>
     </div>
     <div class="homePropose">
@@ -37,9 +28,7 @@
       <h3> Got a question? </h3>
       <div>Free to <a target="_blank" href="https://www.google.com">contact</a> us!</div>
     </div>
-
     <el-dialog center :visible.sync="detailDlgVisible" :title="detailData.name">
-
       <div class="detail">
         <div class="container">
           <div class="left-content">
@@ -65,13 +54,14 @@
 </template>
 
 <script>
-
+import InfoCard from '@/components/InfoCard.vue'
 export default {
   data() {
     return {
       activeNames: ['1'],
       originCollapseList: [
         {
+          id: 'hl1',
           title: "All",
           tableData: [{
             name: '10 CH ADC',
@@ -80,7 +70,7 @@ export default {
             detail: `Components in web development are reusable pieces of code that allow you to create complex and interactive user interfaces. They are a key concept in modern front-end frameworks like React, Angular, and Vue.js, and play a crucial role in building scalable and maintainable applications.Components are designed to encapsulate logic and state, making it easier to reuse and test code. They also help to break down complex applications into smaller, more manageable parts. With components, developers can build complex UI`,
             dueDate: '2023-05-01'
           }, {
-            name: 'test',
+            name: 'test test elliapseelliapseelliapseelliapse',
             available: '10',
             image: require('../assets/404.jpg'),
             detail: 'hi come on',
@@ -103,6 +93,7 @@ export default {
           }]
         },
         {
+          id: 'hl2',
           title: "Adafruit",
           tableData: [{
             name: '10 CH ADC',
@@ -112,13 +103,15 @@ export default {
           }]
         },
         {
+          id: 'hl23',
           title: "Arduino",
           tableData: [{
             name: 'dddd',
             available: '6',
             image: require('../assets/404.jpg'),
             detail: ''
-          }, {
+          },
+          {
             name: 'test',
             available: '10',
             image: require('../assets/404.jpg'),
@@ -126,13 +119,15 @@ export default {
           }]
         },
         {
+          id: 'hl3',
           title: "Audio",
           tableData: [{
             name: 'ddemo',
             available: '6',
             image: require('../assets/404.jpg'),
             detail: ''
-          }, {
+          },
+          {
             name: 'guss',
             available: '5',
             image: require('../assets/404.jpg'),
@@ -141,31 +136,44 @@ export default {
         }
       ],
       collapseList: [],
+      gridCount: 4,
+      category: "hl1",
+      categoryList: [],
+      dataList: [],
       input: '',
       detailDlgVisible: false,
       detailData: { name: '', detail: '', image: '' },
-      selectDate: ''
+      selectDate: '',
+      loading: false
     }
   },
+  components: { InfoCard },
   created() {
     this.collapseList = JSON.parse(JSON.stringify(this.originCollapseList))
+    this.categoryList = this.originCollapseList.map((v, idx) => ({ id: 'hl' + (idx + 1), name: v.title }))
+    this.filterList()
   },
   methods: {
+    filterList() {
+      const baseData = JSON.parse(JSON.stringify(this.originCollapseList))
+      const categoryData = baseData.find(v => v.id === this.category)
+      this.dataList = categoryData ? categoryData.tableData : []
+      this.gridCount = this.dataList.length ? 4 : 1
+    },
     doSearch() {
-      this.activeNames = []
-      if (this.input) {
-        this.originCollapseList.forEach(collapse => {
-          const { title, tableData } = collapse
-          const findItem = this.collapseList.find(c => c.title === title)
-          findItem.tableData = tableData.filter(v => v.name.includes(this.input))
-          if (findItem.tableData && findItem.tableData.length) {
-            this.activeNames.push(title)
-          }
-        })
-      } else {
-        this.collapseList = JSON.parse(JSON.stringify(this.originCollapseList))
-      }
+      this.loading = true
+      this.dataList = []
 
+      const baseData = JSON.parse(JSON.stringify(this.originCollapseList))
+      const categoryData = baseData.find(v => v.id === this.category)
+      const listData = categoryData.tableData
+      if (this.input) {
+        this.dataList = listData.filter(v => v.name.includes(this.input))
+      } else {
+        this.dataList = listData
+      }
+      this.gridCount = this.dataList.length ? 4 : 1
+      this.loading = false
     },
     handleChange(val) {
       console.log(val)
@@ -173,10 +181,8 @@ export default {
     goPropose() {
       this.$router.push('/propose/index')
     },
-    goDetail(data) {
-      //localStorage.setItem('detail', JSON.stringify(data))
-      // this.$router.push('/home/detail')
-      const strDetail = localStorage.getItem('detail')
+    showDetail(data) {
+      debugger
       this.detailData = data
       this.detailDlgVisible = true
     },
@@ -229,6 +235,13 @@ export default {
   .homeComponents {
     margin-top: 20px;
     flex: 1;
+    min-height: 300px;
+    max-height: 800px;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(var(--grid), 1fr);
+    justify-items: center;
+    grid-row-gap: 20px;
 
     :deep .el-collapse-item {
       margin-bottom: 10px;
@@ -253,14 +266,31 @@ export default {
     }
   }
 
+
+
   .homeScript,
   .homeSearch {
     padding: 10px;
     margin: 10px 0;
-    outline: 4px;
-    outline-offset: 15px;
     border-radius: 5px;
     border: 1px solid #2A5E19;
+
+    h3 {
+      padding: 0 20px;
+    }
+
+    .filter {
+      display: flex;
+      padding: 0 10px;
+
+      >:deep .el-input {
+        margin: 0 10px;
+      }
+    }
+  }
+
+  .homeScript {
+    padding: 10px 20px;
   }
 
   .homePropose {
