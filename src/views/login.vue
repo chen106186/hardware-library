@@ -4,16 +4,16 @@
       <h2 class="title">
         Welcome Hardware Library
       </h2>
-      <el-form inline ref="loginFormRef" :model="loginFrom" :rules="rules">
+      <el-form inline ref="loginFormRef" :model="loginForm" :rules="rules">
         <el-form-item label="Username:" prop="username">
-          <el-input v-model="loginFrom.username"></el-input>
+          <el-input v-model="loginForm.username"></el-input>
         </el-form-item>
         <el-form-item label="Password:" prop="password">
-          <el-input type="password" v-model="loginFrom.password"></el-input>
+          <el-input type="password" v-model="loginForm.password"></el-input>
         </el-form-item>
       </el-form>
       <div class="action">
-        <el-button type="primary" @click="submitForm(loginFormRef)">Login</el-button>
+        <el-button type="primary" @click="submitForm()">Login</el-button>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
 export default {
   data() {
     return {
-      loginFrom: { username: '', password: '' },
+      loginForm: { username: '', password: '' },
       rules: {
         username: [{ required: true, message: 'Username can not be empty', trigger: 'blur' }],
         password: [{ required: true, message: 'Password can not be empty', trigger: 'blur' }]
@@ -31,9 +31,12 @@ export default {
   },
   methods: {
     async submitForm() {
+      const _self = this
       this.$refs.loginFormRef.validate(valid => {
         if (valid) {
-          sessionStorage.setItem('token', '123333')
+          sessionStorage.setItem('user', _self.loginForm.username)
+          sessionStorage.setItem('token', 'token_sjdkawkslakdl')
+          sessionStorage.setItem('role', _self.loginForm.username === 'admin' ? '1' : '6')
           this.$message.success('login success')
           this.$router.push('/home')
         }
@@ -84,5 +87,4 @@ export default {
     }
   }
 }
-
 </style>

@@ -1,24 +1,33 @@
 <template>
   <div class="main-container">
-    <header class="hl-header">
+    <header class="hl-header" :style="{ '--bgColor': roleType === '6' ? '#0d5f06' : '#283240' }">
       <span class="name">Hardware Library</span>
-      <el-menu class="menu" mode="horizontal" background-color="#0d5f06" text-color="#fff" active-text-color="#ffd04b"
-        :default-active="activeIndex" @select="handleSelect">
+      <el-menu v-show="roleType === '6'" class="menu" mode="horizontal" background-color="#0d5f06" text-color="#fff"
+        active-text-color="#ffd04b" :default-active="activeIndex" @select="handleSelect">
         <el-menu-item v-for="item in routeList" :key="item.name" :index="item.path">
           {{ item.meta.title }}
         </el-menu-item>
       </el-menu>
+      <el-dropdown trigger="click" @command="handleCommand">
+        <span class="el-dropdown-link">
+          {{ username }}
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="out">log out</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </header>
     <div class="hl-content">
-      <!-- <section class="left-menu">
-                  <div class="menu-list">
-                    <div class="menu-item" v-for="item in routeList" :key="item.name"
-                      :class="{ 'selected': item.meta.title === currentRoute.meta.title }" @click="changeMenu(item)">
-                      {{ item.meta.title }}
-                    </div>
-                  </div>
-                </section> -->
-      <section class="main-page">
+      <section class="left-menu" v-if="roleType === '1'">
+        <el-menu class="menu" mode="vertical" background-color="#334154" text-color="#fff" active-text-color="#ffd04b"
+          :default-active="activeIndex" @select="handleSelect">
+          <el-menu-item v-for="item in routeList" :key="item.name" :index="item.path">
+            {{ item.meta.title }}
+          </el-menu-item>
+        </el-menu>
+      </section>
+      <section :class="[roleType === '6' ? 'main-page' : 'main-page-vertical']">
         <TopTitle />
         <router-view></router-view>
       </section>
@@ -32,27 +41,41 @@ export default {
   data() {
     return {
       activeIndex: '/home',
-      routeList: []
+      routeList: [],
+      headBgColor: ''
     }
   },
   components: { TopTitle },
   computed: {
     currentRoute() {
       return this.$route
+    },
+    roleType() {
+      return sessionStorage.getItem('role')
+    },
+    username() {
+      return sessionStorage.getItem('user')
     }
   },
   created() {
     const routes = this.$router.options.routes
-    this.routeList = routes.filter(r => !r.hidden && !['404', 'Login'].includes(r.name))
+    this.routeList = routes.filter(r => !r.hidden && !['404', 'Login'].includes(r.name) && r.meta.role.includes(this.roleType))
     this.activeIndex = this.$route.matched[0].path
   },
   methods: {
     changeMenu({ path }) {
+      this.activeIndex = path
       this.$router.push({ path })
     },
     handleSelect(path) {
       this.activeIndex = path
       this.$router.push({ path })
+    },
+    handleCommand(command) {
+      ['token', 'user', 'role'].forEach(item => {
+        sessionStorage.removeItem(item)
+      })
+      this.$router.replace('/login')
     }
   }
 
@@ -67,7 +90,7 @@ export default {
   .hl-header {
     height: 40px;
     padding: 20px;
-    background-color: #0d5f06;
+    background-color: var(--bgColor);
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -75,6 +98,13 @@ export default {
     .name {
       font-size: 30px;
       color: #fff;
+    }
+
+    :deep .el-dropdown {
+      position: absolute;
+      right: 10px;
+      color: #fff;
+      cursor: pointer;
     }
 
     .menu {
@@ -99,20 +129,20 @@ export default {
 
   .hl-content {
     position: relative;
-    height: calc(100% - 110px);
-    padding:0 10px 10px;
+    height: calc(100% - 90px);
+    padding: 0 10px 10px;
     display: flex;
     justify-content: center;
     overflow: auto;
 
     .left-menu {
       position: fixed;
-      left: 50px;
-      top: 90px;
-      bottom: 10px;
+      left: 0;
+      top: 80px;
+      bottom: 0;
       overflow: auto;
-      width: 240px;
-      background-color: #fff;
+      width: 200px;
+      background-color: #334154;
       z-index: 10;
 
       .menu-list {
@@ -142,6 +172,12 @@ export default {
     .main-page {
       position: relative;
       width: 1000px;
+      height: fit-content;
+    }
+
+    .main-page-vertical {
+      position: relative;
+      margin: 10px 10px 10px 200px;
       height: fit-content;
     }
   }

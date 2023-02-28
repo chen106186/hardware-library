@@ -103,7 +103,7 @@ export default {
           }]
         },
         {
-          id: 'hl23',
+          id: 'hl3',
           title: "Arduino",
           tableData: [{
             name: 'dddd',
@@ -119,7 +119,7 @@ export default {
           }]
         },
         {
-          id: 'hl3',
+          id: 'hl4',
           title: "Audio",
           tableData: [{
             name: 'ddemo',
@@ -182,7 +182,6 @@ export default {
       this.$router.push('/propose/index')
     },
     showDetail(data) {
-      debugger
       this.detailData = data
       this.detailDlgVisible = true
     },
@@ -220,6 +219,7 @@ export default {
 <style scoped lang="scss">
 .home {
   background-color: #F3F3F3;
+  width: 1000px;
   padding: 10px 20px;
   height: 100%;
   display: flex;
@@ -309,6 +309,7 @@ export default {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 3px 10px 5px 0px #e3e3e3;
+    background-color: #fff;
 
     h3 {
       color: darkorange;
