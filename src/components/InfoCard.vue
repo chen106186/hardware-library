@@ -1,5 +1,5 @@
 <template>
-    <div class="card-container" @click="emitDetail(info)">
+    <div class="card-container" @click="emitDetail">
         <img class="card-img" :src="info.image" alt="">
         <div class="card-name">
             {{ info.name }}
@@ -7,6 +7,8 @@
         <div class="card-available">
             <span class="label">available:</span>
             <span class="count">{{ info.available }}</span>
+            <span v-if="isAdmin" class="action"><el-button size="mini" type="danger"
+                    @click.stop="emitDel">remove</el-button></span>
         </div>
     </div>
 </template>
@@ -25,9 +27,17 @@ export default {
         }
 
     },
+    computed: {
+        isAdmin() {
+            return sessionStorage.getItem('role') === '1'
+        }
+    },
     methods: {
-        emitDetail(data) {
-            this.$emit('show', data);
+        emitDetail() {
+            this.$emit('show', this.info);
+        },
+        emitDel() {
+            this.$emit('del', this.info);
         }
     }
 }
@@ -80,10 +90,15 @@ export default {
 
         .count {
             color: #098556;
-            font-size: 18px;
+            font-size: 25px;
             font-weight: 500;
             margin-left: 5px;
             white-space: nowrap;
+        }
+
+        .action {
+            flex: 1;
+            text-align: right;
         }
     }
 }
