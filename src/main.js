@@ -8,12 +8,13 @@ import 'normalize.css/normalize.css'
 import './permission'
 import '@/style/index.scss'
 import locale from 'element-ui/lib/locale/lang/en'
-
+import * as echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 
 Vue.use(ElementUI, { locale })
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')
