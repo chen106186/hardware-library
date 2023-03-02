@@ -36,7 +36,7 @@
 </template>
   
   <script>
-import proposalsPop from "./proposalsPop.vue";
+import proposalsPop from "../components/proposalsPop.vue";
 export default {
   components: { proposalsPop },
   data() {

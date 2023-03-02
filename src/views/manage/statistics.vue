@@ -50,9 +50,9 @@
 </template>
 
 <script>
-import EChartV from "./Echaets.vue";
-import EChartLine from "./EchaetsLine";
-import proposalsPop from "./proposalsPop.vue";
+import EChartV from "../components/Echaets.vue";
+import EChartLine from "../components/EchaetsLine.vue";
+import proposalsPop from "../components/proposalsPop.vue";
 export default {
   components: { EChartV, EChartLine, proposalsPop },
   name: "statistics",
