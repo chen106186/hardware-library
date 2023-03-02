@@ -91,7 +91,6 @@ export default {
     height: 40px;
     padding: 20px;
     background-color: var(--bgColor);
-    margin-bottom: 10px;
     display: flex;
     align-items: center;
 
