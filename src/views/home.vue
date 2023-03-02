@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h3 class="homeScript">
-      Welcome to the Computer Science Hardware Library<br /><br />
+      Welcome to the Computer Science Hardware Library<br/><br/>
       <span v-if="!isAdmin">You will be able to see your reserved and collected items below, propose new items and look
         through our list
         of components to reserve what you may wish.
@@ -13,7 +13,7 @@
       </span>
     </h3>
     <div class="homeSearch">
-      <h3>Components<br /></h3>
+      <h3>Components<br/></h3>
       <div class="filter">
         <el-select v-model="category" @change="filterList">
           <el-option v-for="item in categoryList" :key="item.id" :value="item.id" :label="item.name">
@@ -23,7 +23,7 @@
         <el-button type="success" size="mini" @click="doSearch">search</el-button>
       </div>
       <div class="homeComponents" :style="{ '--grid': gridCount }" v-loading="loading">
-        <InfoCard v-for="(item, index) in dataList" :key="index" :info="item" @show="showDetail" @del="handleDelete" />
+        <InfoCard v-for="(item, index) in dataList" :key="index" :info="item" @show="showDetail" @del="handleDelete"/>
         <el-empty v-if="dataList && !dataList.length" description="No Results"></el-empty>
       </div>
     </div>
@@ -43,11 +43,11 @@
           </div>
           <el-divider direction="vertical"></el-divider>
           <div class="right-info">
-            <img class="right-img" :src="detailData.image">
+            <img class="right-img" :src="detailData.image"/>
             <div class="action">
               <span>return date:</span>
               <el-date-picker value-format="yyyy-MM-dd" class="select-date" v-model="selectDate"
-                size="small"></el-date-picker>
+                              size="small"></el-date-picker>
               <el-button type="warning" size="small" @click="addCart">Add to cart</el-button>
             </div>
           </div>
@@ -57,8 +57,8 @@
         </div>
       </div>
     </el-dialog>
-    <el-dialog class="admin-dialog" width="1000px" top="6vh" center :visible.sync="adminDlgVisible"
-      @close="handleAdminClose">
+    <!--<el-dialog class="admin-dialog" width="1000px" top="6vh" center :visible.sync="adminDlgVisible"
+               @close="handleAdminClose">
       <div slot="title">
         <span class="edit-title" contenteditable="true">
           {{ adminDetailData.name }}
@@ -68,12 +68,12 @@
         <span class="el-icon-warning"></span>
         Please note you can edit all the bordered areas on this page if you hover over and click on the highlighted
         fields. All the changes will be saved to the database once you will press the Save
-        button ff you need to add a new category. please separate these by comma. In the websites area. you can Cerl - Lef
-        Click or RignClick to follovv link instead of editing it.
+        button ff you need to add a new category. please separate these by comma. In the websites area. you can Cerl -
+        LeftClick or RignClick to follow link instead of editing it.
       </div>
       <el-form ref="adminDetailForm" :model="adminDetailData" class="edit-form" label-width="120px">
         <el-form-item class="detail-item">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6 }" v-model="adminDetailData.detail"> </el-input>
+          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6 }" v-model="adminDetailData.detail"></el-input>
         </el-form-item>
         <el-form-item label="Available:">
           <el-input style="width: 100px;" v-model="adminDetailData.available"></el-input>
@@ -91,11 +91,14 @@
           <el-input style="width: 300px;" v-model="adminDetailData.imagePath"></el-input>
         </el-form-item>
         <el-form-item label="Change Image:">
-          <el-upload class="upload-demo" :multiple="false" action="" :on-preview="handlePreview" :on-remove="handleRemove"
-            :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="adminDetailData.fileList">
+          <el-upload class="upload-demo" :multiple="false" action="" :on-preview="handlePreview"
+                     :on-remove="handleRemove"
+                     :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="adminDetailData.fileList">
             <el-button size="small" type="primary">click to upload</el-button>
-            <div slot="tip" class="el-upload__tip">Select your file,the 'image file path' will then be updated and you can
-              save changes below.</div>
+            <div slot="tip" class="el-upload__tip">Select your file,the 'image file path' will then be updated and you
+              can
+              save changes below.
+            </div>
           </el-upload>
         </el-form-item>
         <el-form-item label="Identifies:">
@@ -120,12 +123,15 @@
       <span slot="footer">
         <el-button type="primary">Save</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
+    <ComponentDialog :c-data="adminDetailData" :c-visible.sync="adminDlgVisible"></ComponentDialog>
   </div>
 </template>
 
 <script>
 import InfoCard from '@/components/InfoCard.vue'
+import ComponentDialog from '@/views/components/ComponentDialog.vue'
+
 export default {
   data() {
     return {
@@ -133,7 +139,7 @@ export default {
       originCollapseList: [
         {
           id: 'hl1',
-          title: "All",
+          title: 'All',
           tableData: [{
             name: '10 CH ADC',
             available: '4',
@@ -143,10 +149,13 @@ export default {
             category: 'Adafruit',
             website: 'http://www.hobbytronics.co.uk/adc-i2c-slace',
             detail: `Components in web development are reusable pieces of code that allow you to create complex and interactive user interfaces. They are a key concept in modern front-end frameworks like React, Angular, and Vue.js, and play a crucial role in building scalable and maintainable applications.Components are designed to encapsulate logic and state, making it easier to reuse and test code. They also help to break down complex applications into smaller, more manageable parts. With components, developers can build complex UI`,
-            dueDate: '2023-05-01',
+            dueDate: '01 May 2023',
             fileList: [],
             pdfFilePath: '',
-            identifies: [{ uniqueID: '1459', status: 'Available' }, { uniqueID: '1462', status: 'Missing' }, { uniqueID: '1915', status: 'Available' },]
+            identifies: [
+              { uniqueID: '1459', status: 'Available' },
+              { uniqueID: '1462', status: 'Missing' },
+              { uniqueID: '1915', status: 'Available' }]
           }, {
             name: 'test test elliapseelliapseelliapseelliapse',
             available: '10',
@@ -172,7 +181,7 @@ export default {
         },
         {
           id: 'hl2',
-          title: "Adafruit",
+          title: 'Adafruit',
           tableData: [{
             name: '10 CH ADC',
             available: '4',
@@ -182,40 +191,40 @@ export default {
         },
         {
           id: 'hl3',
-          title: "Arduino",
+          title: 'Arduino',
           tableData: [{
             name: 'dddd',
             available: '6',
             image: require('../assets/404.jpg'),
             detail: ''
           },
-          {
-            name: 'test',
-            available: '10',
-            image: require('../assets/404.jpg'),
-            detail: ''
-          }]
+            {
+              name: 'test',
+              available: '10',
+              image: require('../assets/404.jpg'),
+              detail: ''
+            }]
         },
         {
           id: 'hl4',
-          title: "Audio",
+          title: 'Audio',
           tableData: [{
             name: 'ddemo',
             available: '6',
             image: require('../assets/404.jpg'),
             detail: ''
           },
-          {
-            name: 'guss',
-            available: '5',
-            image: require('../assets/404.jpg'),
-            detail: ''
-          }]
+            {
+              name: 'guss',
+              available: '5',
+              image: require('../assets/404.jpg'),
+              detail: ''
+            }]
         }
       ],
       collapseList: [],
       gridCount: 4,
-      category: "hl1",
+      category: 'hl1',
       categoryList: [],
       dataList: [],
       input: '',
@@ -223,7 +232,7 @@ export default {
       detailData: { name: '', detail: '', image: '' },
       selectDate: '',
       loading: false,
-      adminDlgVisible: true,
+      adminDlgVisible: false,
       adminDetailData: { fileList: [], pdfFilePath: '', identifies: [] },
       uniqueID: ''
     }
@@ -234,10 +243,14 @@ export default {
       return role === '1'
     }
   },
-  components: { InfoCard },
+  components: { ComponentDialog, InfoCard },
   created() {
     this.collapseList = JSON.parse(JSON.stringify(this.originCollapseList))
-    this.categoryList = this.originCollapseList.map((v, idx) => ({ id: 'hl' + (idx + 1), name: v.title, tableData: v.tableData }))
+    this.categoryList = this.originCollapseList.map((v, idx) => ({
+      id: 'hl' + (idx + 1),
+      name: v.title,
+      tableData: v.tableData
+    }))
     this.filterList()
   },
   methods: {
@@ -275,7 +288,7 @@ export default {
     },
     addCart() {
       if (!this.selectDate) {
-        this.$message.error("Please select return date!")
+        this.$message.error('Please select return date!')
         return
       }
       this.detailData.dueDate = this.selectDate
@@ -294,62 +307,21 @@ export default {
       }
       localStorage.setItem('cart-list', JSON.stringify(localCartList))
       this.$message({
-        type: "success",
+        type: 'success',
         message: 'Add cart success',
         showClose: true
       })
     },
     handleDelete(item) {
       const _self = this
-      this.$confirm('Are you sure delete this components?', 'warning', { type: 'warning' })
-        .then(_ => {
-          const findIndex = _self.dataList.findIndex(v => v.name === item.name)
-          _self.dataList.splice(findIndex, 1)
-        })
-        .catch(_ => {
-          console.log("cancel")
-        })
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`limit 1 file but you selected ${files.length} files`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`Are you sure remove ${file.name}？`);
-    },
-    headerCellStyle() {
-      return { backgroundColor: '#2A323F', color: '#fff', padding: 0 }
-    },
-    handleEditClick() {
-  
-    },
-    handleRemoveClick({ uniqueID }) {
-      this.$confirm('Are you sure to remove this item?', 'warning', { type: 'warning' })
-        .then(_ => {
-          const idIndex = this.adminDetailData.identifies.findIndex(v => v.uniqueID === uniqueID)
-          this.adminDetailData.identifies.splice(idIndex, 1)
-          this.adminDetailData.available = +this.adminDetailData.available--
-          this.adminDetailData.total = +this.adminDetailData.total--
-        }
-        ).catch(_ => {
-          console.log("cancel")
-        })
-    },
-    handleAddUniqueID() {
-      if (!this.uniqueID.trim()) {
-        this.$message.error('UniqueID can not be empty!')
-        return
-      }
-      this.adminDetailData.identifies.push({ uniqueID: this.uniqueID, status: 'Available' })
-    },
-    handleAdminClose() {
-      document.getElementsByClassName('edit-form')[0].scrollTop = 0
-      this.uniqueID = ""
+      this.$confirm('Are you sure to remove this components?', 'warning', { type: 'warning' })
+          .then(_ => {
+            const findIndex = _self.dataList.findIndex(v => v.name === item.name)
+            _self.dataList.splice(findIndex, 1)
+          })
+          .catch(_ => {
+            console.log('cancel')
+          })
     }
   }
 
@@ -385,13 +357,6 @@ export default {
 
     :deep .el-collapse-item {
       margin-bottom: 10px;
-
-      .el-collapse-item__header {
-        background-color: #e3e3e3;
-        padding: 0 20px;
-        color: #000;
-        background-color: #b7d2ae;
-      }
     }
 
     .row-link {
@@ -405,7 +370,6 @@ export default {
       height: 50px;
     }
   }
-
 
 
   .homeScript,
@@ -423,7 +387,7 @@ export default {
       display: flex;
       padding: 0 10px;
 
-      >:deep .el-input {
+      > :deep .el-input {
         margin: 0 10px;
       }
     }
