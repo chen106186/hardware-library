@@ -10,8 +10,8 @@
       <span class="el-icon-warning"></span>
       Please note you can edit all the bordered areas on this page if you hover over and click on the highlighted
       fields. All the changes will be saved to the database once you will press the Save
-      button ff you need to add a new category. please separate these by comma. In the websites area. you can Cerl -
-      LeftClick or RignClick to follow link instead of editing it.
+      button ff you need to add a new category. please separate these by comma. In the websites area. you can Ctrl +
+      LeftClick or RightClick to follow link instead of editing it.
     </div>
     <el-form ref="adminDetailForm" :model="adminDetailData" class="edit-form" label-width="120px">
       <el-form-item class="detail-item">

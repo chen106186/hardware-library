@@ -83,7 +83,7 @@
         <div class="mail-name" v-else>
           Mail to "<span>{{ mailName }}</span>"
         </div>
-        <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4 }"></el-input>
+        <el-input type="textarea" v-model="mailText" :autosize="{ minRows: 4, maxRows: 4 }"></el-input>
       </div>
       <span slot="footer">
         <el-button type="primary" @click="handleSendMail">Send</el-button>
@@ -149,7 +149,8 @@ export default {
       mailDlgVisible: false,
       isMailAll: false,
       mailItem: 'late items',
-      mailName: ''
+      mailName: '',
+      mailText: ''
     }
   },
   mixins: [table],
