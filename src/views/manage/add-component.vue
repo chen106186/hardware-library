@@ -372,6 +372,7 @@ $borderColor: #283240;
   height: 100%;
   padding: 20px 10px 20px 10px;
   border: 1px solid $borderColor;
+  width: 1200px;
 
   h2 {
     text-align: left;

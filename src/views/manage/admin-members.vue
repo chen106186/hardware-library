@@ -2,7 +2,7 @@
   <div class="home">
     <div class="proposes">
       <h2>Current Admins</h2>
-      <el-table :data="list" stripe header-cell-class-name="tablrS">
+      <el-table :data="list" stripe header-cell-class-name="tablrS" border>
         <el-table-column label="Full Name" prop="FullName"></el-table-column>
         <el-table-column label="Email" prop="Email">
           <template slot-scope="scope">
@@ -66,7 +66,9 @@
 </template>
   
   <script>
+  import table from '@/mixins/table'
 export default {
+  mixins: [table],
   data() {
     return {
         ruleForm: {
@@ -113,13 +115,13 @@ export default {
 };
 </script>
   <style scoped lang="scss">
-$Maincolor: #76b0e3;
+$Maincolor: rgb(55, 64, 82);
 $BGcolor: #b1d6f7;
 $EmailColoe: #409eff;
 $borderColor: #283240;
 .home {
   height: 100%;
-  // width: 90%;
+  width: 1200px;
   // margin: auto;
   padding: 20px 10px 20px 10px;
   border: 1px solid $borderColor;
