@@ -1,7 +1,7 @@
 export default {
-    methods:{
+    methods: {
         headerCellStyle() {
-            return { backgroundColor:'#374052',color:'#fff' }
+            return { backgroundColor: '#374052', color: '#fff' }
         }
     }
 }

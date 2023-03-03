@@ -8,7 +8,7 @@
         <el-button type="success" @click="handleNewBooking">Add New Booking</el-button>
         <el-button type="warning" @click="handleMailAll">Mail all</el-button>
       </div>
-      <el-table height="600px" class="bookings-table" border :data="tableData" :header-cell-style="headerCellStyle">
+      <el-table class="bookings-table" border :data="tableData" :header-cell-style="headerCellStyle">
         <el-table-column label="Full Name" prop="fullName"></el-table-column>
         <el-table-column label="School" prop="school" width="80"></el-table-column>
         <el-table-column label="Component Name/Cupboard" show-overflow-tooltip>
