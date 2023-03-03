@@ -4,7 +4,7 @@
         <h1>Computer Science Hardware Library</h1>
       </div> -->
       <div class="Ffrmd">
-        <el-collapse v-model="activeName" accordion>
+        <el-collapse v-model="activeName">
           <el-collapse-item title="How can I reserve an item?" name="1">
             <div>How can I reserve an item?</div>
           </el-collapse-item>
@@ -52,19 +52,20 @@
     name: "FAQ",
     data() {
       return {
-        activeName: "3",
+        activeName: ['1', '2', '3', '4', '5', '6', '7'],
       };
     },
   };
   </script>
   
   <style scoped lang="scss">
-  $Maincolor: #76b0e3;
+  $Maincolor: rgb(55, 64, 82);
 $BGcolor: #b1d6f7;
 $EmailColoe: #409eff;
 $borderColor: #283240;
   .fapInd {
     height: 100%;
+    width: 1200px;
     .colorC {
       text-decoration: underline;
       color: red;
@@ -78,9 +79,10 @@ $borderColor: #283240;
       .el-collapse-item {
         ::v-deep {
           .el-collapse-item__header {
-            background-color: $BGcolor;
+            background-color: $Maincolor;
             padding-left: 10px;
             font-size: 18px;
+            color:#fff;
           }
           .el-collapse-item__content {
             font-size: 18px;

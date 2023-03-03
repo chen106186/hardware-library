@@ -3,14 +3,14 @@
     <div class="staCon">
       <h2>Statistics</h2>
       <div class="collCls">
-        <el-collapse v-model="activeName" accordion>
+        <el-collapse v-model="activeName">
           <el-collapse-item title="Top 10 Most Popular Components" name="1">
             <div class="collItn">
               <EChartV :EChartData="ComponentsData"></EChartV>
             </div>
           </el-collapse-item>
           <el-collapse-item title="Unavailable Components" name="2">
-            <el-table :data="list" stripe header-cell-class-name="tablrS">
+            <el-table :data="list" stripe header-cell-class-name="tablrS" border>
               <el-table-column label="Image" prop="Image">
                 <template slot-scope="scope">
                   <img class="imgs" :src="scope.row.Image" alt="" />
@@ -50,16 +50,19 @@
 </template>
 
 <script>
+import table from '@/mixins/table'
 import EChartV from "../components/Echaets.vue";
 import EChartLine from "../components/EchaetsLine.vue";
 import proposalsPop from "../components/proposalsPop.vue";
 export default {
   components: { EChartV, EChartLine, proposalsPop },
   name: "statistics",
+  mixins: [table],
   data() {
     return {
+      activeName: ['1', '2', '3', '4'],
       dialogVisible: false,
-      activeName: "1",
+      // activeName: "1",
       ComponentsData: null,
       MonthsData: null,
       list: [
@@ -121,12 +124,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$Maincolor: #76b0e3;
+$Maincolor: rgb(55, 64, 82);
 $BGcolor: #b1d6f7;
 $EmailColoe: #409eff;
 $borderColor: #283240;
 .statis {
   height: 100%;
+  width: 1200px;
   padding: 20px 10px 20px 10px;
   border: 1px solid $borderColor;
   :deep {
