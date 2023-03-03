@@ -12,6 +12,13 @@ html, body {
 }
 
 .el-table th.el-table__cell {
-  // background-color: #3918B0;
   color: #000;
+}
+
+.el-dialog__body {
+  padding: 5px 25px !important;
+}
+
+.el-table .el-table__cell.gutter {
+  background-color: rgb(55, 64, 82);
 }

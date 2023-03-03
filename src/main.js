@@ -6,8 +6,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'normalize.css/normalize.css'
 import './permission'
-import '@/style/index.scss'
 import locale from 'element-ui/lib/locale/lang/en'
+import '@/style/index.scss'
 import * as echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
