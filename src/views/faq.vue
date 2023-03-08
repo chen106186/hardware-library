@@ -1,10 +1,8 @@
 <template>
+  <!-- test -->
   <div class="fapInd">
-    <div class="sub-title">
-      FAQ
-    </div>
+    <div class="sub-title">FAQ</div>
     <div class="message-wrapper" v-for="item in qaList" :key="item.id">
-
       <div class="message incoming">
         <span class="avatar">Q:</span>
         <div class="message-text">
@@ -23,18 +21,34 @@
 
 <script>
 export default {
-  name: 'Faq',
+  name: "Faq",
   data() {
     return {
       qaList: [
-        { id: 1, question: 'How can I reserve an item?', answer: 'How can I reserve an item?' },
-        { id: 2, question: 'What happens after I reserve an item?', answer: 'What happens after I reserve an item?' },
-        { id: 3, question: 'Where can I see my proposais and their state?', answer: 'here can I see my surrent bookings and reservations?' },
-        { id: 4, question: 'Who can I contact if I have further questions?', answer: 'Who can I contact if I have further questions?' },
-      ]
-    }
-  }
-}
+        {
+          id: 1,
+          question: "How can I reserve an item?",
+          answer: "How can I reserve an item?",
+        },
+        {
+          id: 2,
+          question: "What happens after I reserve an item?",
+          answer: "What happens after I reserve an item?",
+        },
+        {
+          id: 3,
+          question: "Where can I see my proposais and their state?",
+          answer: "here can I see my surrent bookings and reservations?",
+        },
+        {
+          id: 4,
+          question: "Who can I contact if I have further questions?",
+          answer: "Who can I contact if I have further questions?",
+        },
+      ],
+    };
+  },
+};
 </script>
 
 <style scoped lang="scss">
