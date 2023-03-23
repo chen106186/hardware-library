@@ -1,59 +1,88 @@
 <template>
   <div class="home">
     <h3 class="homeScript">
-      Welcome to the Computer Science Hardware Library<br/><br/>
-      <span v-if="!isAdmin">You will be able to see your reserved and collected items below, propose new items and look
-        through our list
-        of components to reserve what you may wish.
+      Welcome to the Computer Science Hardware Library<br /><br />
+      <span v-if="!isAdmin"
+        >You will be able to see your reserved and collected items below,
+        propose new items and look through our list of components to reserve
+        what you may wish.
       </span>
       <span v-else>
-        You will be able to see navigate through past, current and awaiting bookings, see component proposals from the
-        students, send emails for items collection or their unavailabirty, for sending reminders about returning an item,
-        send a personal message, remove components and update all their information about a component the database.
+        You will be able to see navigate through past, current and awaiting
+        bookings, see component proposals from the students, send emails for
+        items collection or their unavailabirty, for sending reminders about
+        returning an item, send a personal message, remove components and update
+        all their information about a component the database.
       </span>
     </h3>
     <div class="homeSearch">
-      <h3>Components<br/></h3>
+      <h3>Components<br /></h3>
       <div class="filter">
         <el-select v-model="category" @change="filterList">
-          <el-option v-for="item in categoryList" :key="item.id" :value="item.id" :label="item.name">
+          <el-option
+            v-for="item in categoryList"
+            :key="item.id"
+            :value="item.id"
+            :label="item.name"
+          >
           </el-option>
         </el-select>
         <el-input v-model="input" placeholder="Components"></el-input>
-        <el-button type="success" size="mini" @click="doSearch">search</el-button>
+        <el-button type="success" size="mini" @click="doSearch"
+          >search</el-button
+        >
       </div>
-      <div class="homeComponents" :style="{ '--grid': gridCount }" v-loading="loading">
-        <InfoCard v-for="(item, index) in dataList" :key="index" :info="item" @show="showDetail" @del="handleDelete"/>
-        <el-empty v-if="dataList && !dataList.length" description="No Results"></el-empty>
+      <div
+        class="homeComponents"
+        :style="{ '--grid': gridCount }"
+        v-loading="loading"
+      >
+        <InfoCard
+          v-for="(item, index) in dataList"
+          :key="index"
+          :info="item"
+          @show="showDetail"
+          @del="handleDelete"
+        />
+        <el-empty
+          v-if="dataList && !dataList.length"
+          description="No Results"
+        ></el-empty>
       </div>
     </div>
     <div v-if="!isAdmin" class="homePropose">
-      <h3> Can't find what you're looking for? </h3>
+      <h3>Can't find what you're looking for?</h3>
       <el-button type="success" @click="goPropose">propose</el-button>
     </div>
     <div v-if="!isAdmin" class="homePropose-fix">
-      <h3> Got a question? </h3>
-      <div>Free to <a target="_blank" href="https://www.google.com">contact</a> us!</div>
+      <h3>Got a question?</h3>
+      <div>
+        Free to <a target="_blank" href="https://www.google.com">contact</a> us!
+      </div>
     </div>
     <el-dialog center :visible.sync="detailDlgVisible" :title="detailData.name">
       <div class="detail">
         <div class="container">
           <div class="left-content">
-            <p> {{ detailData.detail }} </p>
+            <p>{{ detailData.detail }}</p>
           </div>
           <el-divider direction="vertical"></el-divider>
           <div class="right-info">
-            <img class="right-img" :src="detailData.image"/>
+            <img class="right-img" :src="detailData.image" />
             <div class="action">
               <span>return date:</span>
-              <el-date-picker value-format="yyyy-MM-dd" class="select-date" v-model="selectDate"
-                              size="small"></el-date-picker>
-              <el-button type="warning" size="small" @click="addCart">Add to cart</el-button>
+              <el-date-picker
+                value-format="yyyy-MM-dd"
+                class="select-date"
+                v-model="selectDate"
+                size="small"
+              ></el-date-picker>
+              <el-button type="warning" size="small" @click="addCart"
+                >Add to cart</el-button
+              >
             </div>
           </div>
-          <div class="website">
-            <span class="ws-p">website</span> :dasdas
-          </div>
+          <div class="website"><span class="ws-p">website</span> :dasdas</div>
         </div>
       </div>
     </el-dialog>
@@ -124,213 +153,291 @@
         <el-button type="primary">Save</el-button>
       </span>
     </el-dialog>-->
-    <ComponentDialog :c-data="adminDetailData" :c-visible.sync="adminDlgVisible"></ComponentDialog>
+    <ComponentDialog
+      :c-data="adminDetailData"
+      @goSave="getadminDetailData"
+      :c-visible.sync="adminDlgVisible"
+    ></ComponentDialog>
   </div>
 </template>
 
 <script>
-import InfoCard from '@/components/InfoCard.vue'
-import ComponentDialog from '@/views/components/ComponentDialog.vue'
-
+import InfoCard from "@/components/InfoCard.vue";
+import ComponentDialog from "@/views/components/ComponentDialog.vue";
+import api from "@/api/index";
 export default {
   data() {
     return {
-      activeNames: ['1'],
+      activeNames: ["1"],
       originCollapseList: [
         {
-          id: 'hl1',
-          title: 'All',
-          tableData: [{
-            name: '10 CH ADC',
-            available: '4',
-            total: '5',
-            image: require('../assets/404.jpg'),
-            imagePath: 'assets/test-image.png',
-            category: 'Adafruit',
-            website: 'http://www.hobbytronics.co.uk/adc-i2c-slace',
-            detail: `Components in web development are reusable pieces of code that allow you to create complex and interactive user interfaces. They are a key concept in modern front-end frameworks like React, Angular, and Vue.js, and play a crucial role in building scalable and maintainable applications.Components are designed to encapsulate logic and state, making it easier to reuse and test code. They also help to break down complex applications into smaller, more manageable parts. With components, developers can build complex UI`,
-            dueDate: '01 May 2023',
-            fileList: [],
-            pdfFilePath: '',
-            identifies: [
-              { uniqueID: '1459', status: 'Available' },
-              { uniqueID: '1462', status: 'Missing' },
-              { uniqueID: '1915', status: 'Available' }]
-          }, {
-            name: 'test test elliapseelliapseelliapseelliapse',
-            available: '10',
-            image: require('../assets/404.jpg'),
-            detail: 'hi come on',
-            dueDate: '2023-05-02'
-          }, {
-            name: 'dddd',
-            available: '6',
-            image: require('../assets/404.jpg'),
-            detail: ''
-          }, {
-            name: 'ddemo',
-            available: '6',
-            image: require('../assets/404.jpg'),
-            detail: ''
-          }, {
-            name: 'guss',
-            available: '5',
-            image: require('../assets/404.jpg'),
-            detail: ''
-          }]
-        },
-        {
-          id: 'hl2',
-          title: 'Adafruit',
-          tableData: [{
-            name: '10 CH ADC',
-            available: '4',
-            image: require('../assets/404.jpg'),
-            detail: 'hahahha you jdsjdjfajdcxncdh dsdioidosjadkj'
-          }]
-        },
-        {
-          id: 'hl3',
-          title: 'Arduino',
-          tableData: [{
-            name: 'dddd',
-            available: '6',
-            image: require('../assets/404.jpg'),
-            detail: ''
-          },
+          id: "hl1",
+          title: "All",
+          tableData: [
             {
-              name: 'test',
-              available: '10',
-              image: require('../assets/404.jpg'),
-              detail: ''
-            }]
+              name: "10 CH ADC",
+              available: "4",
+              total: "5",
+              image: require("../assets/404.jpg"),
+              imagePath: "assets/test-image.png",
+              category: "Adafruit",
+              website: "http://www.hobbytronics.co.uk/adc-i2c-slace",
+              detail: `Components in web development are reusable pieces of code that allow you to create complex and interactive user interfaces. They are a key concept in modern front-end frameworks like React, Angular, and Vue.js, and play a crucial role in building scalable and maintainable applications.Components are designed to encapsulate logic and state, making it easier to reuse and test code. They also help to break down complex applications into smaller, more manageable parts. With components, developers can build complex UI`,
+              dueDate: "01 May 2023",
+              fileList: [],
+              pdfFilePath: "",
+              identifies: [
+                { uniqueID: "1459", status: "Available" },
+                { uniqueID: "1462", status: "Missing" },
+                { uniqueID: "1915", status: "Available" },
+              ],
+            },
+            {
+              name: "test test elliapseelliapseelliapseelliapse",
+              available: "10",
+              image: require("../assets/404.jpg"),
+              detail: "hi come on",
+              dueDate: "2023-05-02",
+            },
+            {
+              name: "dddd",
+              available: "6",
+              image: require("../assets/404.jpg"),
+              detail: "",
+            },
+            {
+              name: "ddemo",
+              available: "6",
+              image: require("../assets/404.jpg"),
+              detail: "",
+            },
+            {
+              name: "guss",
+              available: "5",
+              image: require("../assets/404.jpg"),
+              detail: "",
+            },
+          ],
         },
         {
-          id: 'hl4',
-          title: 'Audio',
-          tableData: [{
-            name: 'ddemo',
-            available: '6',
-            image: require('../assets/404.jpg'),
-            detail: ''
-          },
+          id: "hl2",
+          title: "Adafruit",
+          tableData: [
             {
-              name: 'guss',
-              available: '5',
-              image: require('../assets/404.jpg'),
-              detail: ''
-            }]
-        }
+              name: "10 CH ADC",
+              available: "4",
+              image: require("../assets/404.jpg"),
+              detail: "hahahha you jdsjdjfajdcxncdh dsdioidosjadkj",
+            },
+          ],
+        },
+        {
+          id: "hl3",
+          title: "Arduino",
+          tableData: [
+            {
+              name: "dddd",
+              available: "6",
+              image: require("../assets/404.jpg"),
+              detail: "",
+            },
+            {
+              name: "test",
+              available: "10",
+              image: require("../assets/404.jpg"),
+              detail: "",
+            },
+          ],
+        },
+        {
+          id: "hl4",
+          title: "Audio",
+          tableData: [
+            {
+              name: "ddemo",
+              available: "6",
+              image: require("../assets/404.jpg"),
+              detail: "",
+            },
+            {
+              name: "guss",
+              available: "5",
+              image: require("../assets/404.jpg"),
+              detail: "",
+            },
+          ],
+        },
       ],
       collapseList: [],
-      gridCount: 4,
-      category: 'hl1',
+      gridCount: "",
+      category: "hl1",
       categoryList: [],
       dataList: [],
-      input: '',
+      input: "",
       detailDlgVisible: false,
-      detailData: { name: '', detail: '', image: '' },
-      selectDate: '',
+      detailData: { name: "", description: "", image: "" },
+      selectDate: "",
       loading: false,
       adminDlgVisible: false,
-      adminDetailData: { fileList: [], pdfFilePath: '', identifies: [] },
-      uniqueID: ''
-    }
+      adminDetailData: { fileList: [], pdfFilePath: "", identifies: [] },
+      uniqueID: "",
+    };
   },
   computed: {
     isAdmin() {
-      const role = sessionStorage.getItem('role')
-      return role === '1'
-    }
+      const role = sessionStorage.getItem("role");
+      return role === "1";
+    },
   },
   components: { ComponentDialog, InfoCard },
   created() {
-    this.collapseList = JSON.parse(JSON.stringify(this.originCollapseList))
+    this.collapseList = JSON.parse(JSON.stringify(this.originCollapseList));
     this.categoryList = this.originCollapseList.map((v, idx) => ({
-      id: 'hl' + (idx + 1),
+      id: "hl" + (idx + 1),
       name: v.title,
-      tableData: v.tableData
-    }))
-    this.filterList()
+      tableData: v.tableData,
+    }));
+    this.filterList();
+    this.getPageData();
   },
   methods: {
+    getPageData() {
+      this.getHomeInfo();
+    },
+    getadminDetailData(adminDetailData) {
+      this.adminDetailData = adminDetailData;
+    },
+    findDetailsById(id) {
+      let params = {
+        id,
+      };
+      api.findDetailsById(params).then((res) => {
+        this.adminDetailData.identifies = res.componentInventories.map((it) => {
+          return {
+            uniqueID: it.componentId,
+            status: it.statusInfo,
+          };
+        });
+        console.log(this.adminDetailData.identifies);
+      });
+    },
+    //insertCart
+    insertCart(data) {
+      let params = {
+        componentUserCart: data,
+      };
+      api.insertCart(params).then((res) => {});
+    },
+
+    deleteContent() {
+      let params = {};
+      api.deleteContent(params).then((res) => {});
+    },
+    getHomeInfo() {
+      api.findContentInfo().then((res) => {
+        this.dataList = res.map((it) => {
+          return {
+            id: it.id,
+            name: it.name,
+            available: it.count,
+            image: it.image,
+          };
+        });
+        this.selectDate = res.map((it) => it.createtime);
+      });
+    },
     filterList() {
-      const baseData = JSON.parse(JSON.stringify(this.originCollapseList))
-      const categoryData = baseData.find(v => v.id === this.category)
-      this.dataList = categoryData ? categoryData.tableData : []
-      this.gridCount = this.dataList.length ? 4 : 1
+      this.gridCount = this.dataList.length ? 1 : 4;
     },
     doSearch() {
-      this.loading = true
-      this.dataList = []
+      this.loading = true;
+      this.dataList = [];
 
-      const baseData = JSON.parse(JSON.stringify(this.originCollapseList))
-      const categoryData = baseData.find(v => v.id === this.category)
-      const listData = categoryData.tableData
+      // const baseData = JSON.parse(JSON.stringify(this.originCollapseList));
+      const categoryData = dataList.find((v) => v.id === this.category);
+      const listData = categoryData.tableData;
       if (this.input) {
-        this.dataList = listData.filter(v => v.name.includes(this.input))
+        this.dataList = listData.filter((v) => v.name.includes(this.input));
       } else {
-        this.dataList = listData
+        this.dataList = listData;
       }
-      this.gridCount = this.dataList.length ? 4 : 1
-      this.loading = false
+      this.gridCount = this.dataList.length ? 4 : 1;
+      this.loading = false;
     },
     handleChange(val) {
-      console.log(val)
+      console.log(val);
     },
     goPropose() {
-      this.$router.push('/propose/index')
+      this.$router.push("/propose/index");
     },
     showDetail(data) {
-      this.detailData = data
-      this.adminDetailData = data
-      this.isAdmin ? (this.adminDlgVisible = true) : (this.detailDlgVisible = true)
+      let id = data.id;
+      this.findDetailsById(id);
+      this.detailData = data;
+      this.adminDetailData = data;
+      // this.adminDetailData = this.adminDetailData;
+      this.isAdmin
+        ? (this.adminDlgVisible = true)
+        : (this.detailDlgVisible = true);
     },
     addCart() {
+      let data = {};
+      data.userId = 1;
+      data.componentId = 1;
+      data.id = 1;
+      this.insertCart(data);
       if (!this.selectDate) {
-        this.$message.error('Please select return date!')
-        return
+        this.$message.error("Please select return date!");
+        return;
       }
-      this.detailData.dueDate = this.selectDate
-      let localCartList = localStorage.getItem('cart-list')
-      if (!localCartList || localCartList === 'undefined' || !localCartList.length) {
-        localCartList = []
+      this.detailData.dueDate = this.selectDate;
+      let localCartList = localStorage.getItem("cart-list");
+      if (
+        !localCartList ||
+        localCartList === "undefined" ||
+        !localCartList.length
+      ) {
+        localCartList = [];
       } else {
-        localCartList = JSON.parse(localCartList)
+        localCartList = JSON.parse(localCartList);
       }
-      const findItem = localCartList.find(v => v.name === this.detailData.name)
+      const findItem = localCartList.find(
+        (v) => v.name === this.detailData.name
+      );
       if (findItem) {
-        findItem.quantity++
-        findItem.dueDate = this.selectDate
+        findItem.quantity++;
+        findItem.dueDate = this.selectDate;
       } else {
-        localCartList.push(this.detailData)
+        localCartList.push(this.detailData);
       }
-      localStorage.setItem('cart-list', JSON.stringify(localCartList))
+      localStorage.setItem("cart-list", JSON.stringify(localCartList));
       this.$message({
-        type: 'success',
-        message: 'Add cart success',
-        showClose: true
-      })
+        type: "success",
+        message: "Add cart success",
+        showClose: true,
+      });
     },
     handleDelete(item) {
-      const _self = this
-      this.$confirm('Are you sure to remove this components?', 'warning', { type: 'warning' })
-          .then(_ => {
-            const findIndex = _self.dataList.findIndex(v => v.name === item.name)
-            _self.dataList.splice(findIndex, 1)
-          })
-          .catch(_ => {
-            console.log('cancel')
-          })
-    }
-  }
-
-}
-
+      const _self = this;
+      this.$confirm("Are you sure to remove this components?", "warning", {
+        type: "warning",
+      })
+        .then((_) => {
+          const findIndex = _self.dataList.findIndex(
+            (v) => v.name === item.name
+          );
+          _self.dataList.splice(findIndex, 1);
+        })
+        .catch((_) => {
+          console.log("cancel");
+        });
+    },
+  },
+};
 </script>
 <style scoped lang="scss">
 .home {
-  background-color: #F3F3F3;
+  background-color: #f3f3f3;
   width: 1000px;
   padding: 10px 20px;
   height: 100%;
@@ -371,13 +478,12 @@ export default {
     }
   }
 
-
   .homeScript,
   .homeSearch {
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    border: 1px solid #2A5E19;
+    border: 1px solid #2a5e19;
 
     h3 {
       padding: 0 20px;
@@ -400,7 +506,7 @@ export default {
   .homePropose {
     height: 100px;
     padding: 10px;
-    border: 1px solid #2A5E19;
+    border: 1px solid #2a5e19;
     border-radius: 5px;
     margin-bottom: 10px;
   }
@@ -409,7 +515,7 @@ export default {
     position: fixed;
     right: 20px;
     bottom: 100px;
-    border: 1px solid #E5E5E5;
+    border: 1px solid #e5e5e5;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 3px 10px 5px 0px #e3e3e3;
@@ -441,7 +547,6 @@ export default {
   }
 
   .right-info {
-
     .right-img {
       width: 100%;
       height: 90%;
@@ -455,8 +560,6 @@ export default {
         margin: 0 10px;
       }
     }
-
-
   }
 
   .website {
@@ -481,10 +584,9 @@ export default {
     }
   }
 
-
   .edit-title {
     padding: 5px;
-    border: 1px dashed #2A323F;
+    border: 1px dashed #2a323f;
     border-radius: 5px;
   }
 

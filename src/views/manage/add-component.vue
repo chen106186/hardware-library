@@ -13,18 +13,18 @@
         <el-form-item label="ComponentName:" prop="name">
           <el-input v-model="ruleForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="Description:" prop="desc">
+        <el-form-item label="Description:" prop="description">
           <el-input
             type="textarea"
             :rows="4"
             :autosize="{ minRows: 4, maxRows: 4 }"
-            v-model="ruleForm.desc"
+            v-model="ruleForm.description"
           ></el-input>
         </el-form-item>
         <el-form-item label="Websites (one per line):" prop="find">
           <el-input v-model="ruleForm.find"></el-input>
         </el-form-item>
-        <el-form-item label="lmage FilePath:" prop="imageLike">
+        <el-form-item label="lmage FilePath:" prop=" imagePath">
           <el-upload
             class="upload-demo"
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -42,7 +42,7 @@
             </div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="PDF FilePath:" prop="POF">
+        <el-form-item label="PDF FilePath:" prop=" pdfPath">
           <el-upload
             class="upload-demo"
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -61,7 +61,10 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="Categony:" prop="Categony">
-          <el-input v-model="ruleForm.Categony" @focus="inputfocus"></el-input>
+          <el-input
+            v-model="ruleForm.categories"
+            @focus="inputfocus"
+          ></el-input>
         </el-form-item>
         <el-form-item label="Cupboard:" prop="Cupboard">
           <el-select v-model="Cupboardvalue" placeholder="Please enter">
@@ -83,7 +86,7 @@
           >
         </el-form-item>
         <el-form-item label="Quantity:" prop="Quantity">
-          <el-input v-model="ruleForm.Quantity"></el-input>
+          <el-input v-model="ruleForm.qty"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')"
@@ -115,9 +118,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">cancel</el-button>
-          <el-button type="primary" @click="dialogVisible = false"
-            >define</el-button
-          >
+          <el-button type="primary" @click="handleSelected">OK</el-button>
         </span>
       </el-dialog>
     </div>
@@ -125,6 +126,7 @@
 </template>
   
   <script>
+import api from "@/api/index";
 export default {
   name: "ProposeIndex",
   data() {
@@ -236,19 +238,23 @@ export default {
       PDFfileList: [],
       ruleForm: {
         name: "",
-        desc: "",
-        find: "",
-        imageLike: "",
-        POF: "",
-        Categony: "",
-        Cupboard: "",
+        description: "",
+        websites: "",
+        imagePath: "",
+        pdfPath: "",
+        categories: "",
+        // Cupboard: "",
         UniquelD: "",
-        Quantity: "",
+        qty: "",
+        id: 0,
+        statusInfo: 1,
       },
       rules: {
         name: [{ required: true, message: "Please enter", trigger: "blur" }],
-        desc: [{ required: true, message: "Please enter", trigger: "blur" }],
-        Categony: [
+        description: [
+          { required: true, message: "Please enter", trigger: "blur" },
+        ],
+        categories: [
           { required: true, message: "Please enter", trigger: "blur" },
         ],
         UniquelD: [
@@ -260,6 +266,14 @@ export default {
   },
   mounted() {},
   methods: {
+    handleSelected() {
+      const category = this.seloptions.find((v) => v.value === this.selvalue);
+      this.ruleForm.categories = category.label;
+      this.dialogVisible = false;
+    },
+    insertContent(ruleForm) {
+      api.insertContent(ruleForm).then((res) => {});
+    },
     handleClose() {
       this.dialogVisible = false;
     },
@@ -309,36 +323,11 @@ export default {
       this.$refs[formName].validate((valid) => {
         // 数据验证成功
         if (valid) {
-          // 取数据
-          let newArr = JSON.parse(window.localStorage.getItem("ProposeList"));
-          this.LoacalArr = newArr;
-          let ProposeList = [];
           // 如果无数据
-          if (!this.LoacalArr) {
-            ProposeList.push(this.ruleForm);
-            window.localStorage.setItem(
-              "ProposeList",
-              JSON.stringify(ProposeList)
-            );
+          if (!this.ruleForm) {
           } else {
             // 有数据
-            let _this = this;
-            let arrIndex = this.LoacalArr.findIndex(function (item) {
-              return item.name == _this.ruleForm.name;
-            });
-
-            if (arrIndex == -1) {
-              // 数据没有重复字段name区分
-              this.LoacalArr.push(this.ruleForm);
-            } else {
-              // 数据有重复字段name区分
-              this.LoacalArr.splice(arrIndex, 1, this.ruleForm);
-            }
-            // 存最新数据
-            window.localStorage.setItem(
-              "ProposeList",
-              JSON.stringify(this.LoacalArr)
-            );
+            this.insertContent(this.ruleForm);
           }
           // 提示成功 ，或则跳转页面
           this.$message({
@@ -420,7 +409,7 @@ $borderColor: #283240;
     display: flex;
     align-items: center;
     height: 35px;
-    padding:0 0 100px 0;
+    padding: 0 0 100px 0;
     .sp1 {
       width: 100px;
     }

@@ -24,27 +24,40 @@
         <el-table-column label="Due date" prop="dueDate"></el-table-column>
       </el-table>
     </div>
-
-
   </div>
 </template>
 
 <script>
+import api from "@/api/index";
 export default {
   data() {
     return {
-      list: [
-        { name: 'axxx', status: 'player', dueDate: '2023-03-01' },
-        { name: 'ame', status: 'pos1', dueDate: '2023-03-15' },
-        { name: 'maybe', status: 'pos2', dueDate: '2023-04-01' },
-      ]
-
+      list: [],
     };
   },
   mounted() {
+    this.getPageData();
   },
-}
-
+  methods: {
+    getPageData() {
+      this.findComponentViewByUser();
+    },
+    findComponentViewByUser() {
+      let params = {
+        userId: "1",
+      };
+      api.findComponentViewByUser(params).then((res) => {
+        this.list = res.map((it) => {
+          return {
+            name: it.userName,
+            status: it.statusInfo,
+            dueDate: it.dueDate,
+          };
+        });
+      });
+    },
+  },
+};
 </script>
 <style scoped lang="scss">
 .home {
@@ -59,7 +72,7 @@ export default {
   }
 
   .proposes {
-    background-color: #F3F3F3;
+    background-color: #f3f3f3;
     border: 1px solid #f0f0f0;
     border-radius: 5px;
     padding: 20px;

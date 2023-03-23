@@ -5,7 +5,9 @@
       <el-table :data="list" stripe header-cell-class-name="tablrS" border>
         <el-table-column label="Component Name" prop="name">
           <template slot-scope="scope">
-            <a class="dirdd" @click="submitFun">{{ scope.row.name }}</a>
+            <a class="dirdd" @click="submitFun(id, name)">{{
+              scope.row.name
+            }}</a>
           </template>
         </el-table-column>
         <el-table-column label="Full Name" prop="FullName"></el-table-column>
@@ -30,46 +32,60 @@
       width="50%"
       @close="handleClose"
     >
-      <proposalsPop></proposalsPop>
+      <proposalsPop :data="proposalsData"></proposalsPop>
     </el-dialog>
   </div>
 </template>
   
   <script>
-  import table from '@/mixins/table'
+import table from "@/mixins/table";
 import proposalsPop from "../components/proposalsPop.vue";
+import api from "@/api/index";
 export default {
   mixins: [table],
   components: { proposalsPop },
   data() {
     return {
       dialogVisible: false,
-      list: [
-        {
-          name: "PiR Sensoi",
-          FullName: "Seung shin",
-          Cost: "55",
-          Email: "seung.shinastudent.manchester.ac.ul",
-          Qty: "2",
-          StudentProgramme: "",
-          Date: "09 5ep 2014",
-        },
-        {
-          name: "Omron D6T MEMs Thermal IRSensor",
-          FullName: "Seung shin",
-          Cost: "55",
-          Email: "seung.shin@student.manchester.ac.u",
-          Qty: "2",
-          StudentProgramme: "",
-          Date: "09 5ep 2014",
-        },
-      ],
+      list: [],
     };
   },
-  mounted() {},
+  mounted() {
+    this.getPageData();
+  },
   methods: {
-    submitFun() {
+    getPageData() {
+      this.getList();
+    },
+    updateProposal() {
+      api.updateProposal().then((res) => {});
+    },
+    getList() {
+      api.getList().then((res) => {
+        console.log(res);
+        this.list = res.map((it) => {
+          return {
+            id: it.id,
+            name: it.name,
+            FullName: it.userName,
+            Cost: it.cost,
+            Email: it.userEmail,
+            Qty: it.qty,
+            StudentProgramme: it.studentProgramme,
+            Date: it.createtime,
+          };
+        });
+      });
+    },
+    updateProposal(id) {
+      let params = {
+        id,
+      };
+      api.updateProposal(params).then((res) => {});
+    },
+    submitFun(id, name) {
       this.dialogVisible = true;
+      this.updateProposal(id);
     },
     handleClose() {},
   },

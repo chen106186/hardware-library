@@ -1,9 +1,7 @@
 <template>
   <div class="login">
     <div class="login-content">
-      <h2 class="title">
-        Welcome Hardware Library
-      </h2>
+      <h2 class="title">Welcome Hardware Library</h2>
       <el-form inline ref="loginFormRef" :model="loginForm" :rules="rules">
         <el-form-item label="Username:" prop="username">
           <el-input v-model="loginForm.username"></el-input>
@@ -13,39 +11,68 @@
         </el-form-item>
       </el-form>
       <div class="action">
-        <el-button type="primary" @click="submitForm()">Login</el-button>
+        <el-button type="primary" @click="submitForm(loginForm)"
+          >Login</el-button
+        >
       </div>
     </div>
   </div>
 </template>
 <script>
+import api from "@/api/index";
 export default {
   data() {
     return {
-      loginForm: { username: '', password: '' },
+      loginForm: { username: "", password: "" },
       rules: {
-        username: [{ required: true, message: 'Username can not be empty', trigger: 'blur' }],
-        password: [{ required: true, message: 'Password can not be empty', trigger: 'blur' }]
-      }
-    }
+        username: [
+          {
+            required: true,
+            message: "Username can not be empty",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "Password can not be empty",
+            trigger: "blur",
+          },
+        ],
+      },
+    };
+  },
+  mounted() {
+    this.getPageData();
   },
   methods: {
-    async submitForm() {
-      const _self = this
-      this.$refs.loginFormRef.validate(valid => {
+    getPageData() {
+      this.login();
+    },
+    login(loginForm) {
+      let params = {
+        loginParam: loginForm,
+      };
+      api.login(params).then((res) => {});
+    },
+    async submitForm(loginForm) {
+      const _self = this;
+      this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
-          sessionStorage.setItem('user', _self.loginForm.username)
-          sessionStorage.setItem('token', 'token_sjdkawkslakdl')
-          sessionStorage.setItem('role', _self.loginForm.username === 'admin' ? '1' : '6')
-          this.$message.success('login success')
-          this.$router.push('/home')
+          this.login(loginForm);
+          sessionStorage.setItem("user", _self.loginForm.username);
+          sessionStorage.setItem("token", "token_sjdkawkslakdl");
+          sessionStorage.setItem(
+            "role",
+            _self.loginForm.username === "admin" ? "1" : "6"
+          );
+          this.$message.success("login success");
+          this.$router.push("/home");
         }
-      })
-    }
-  }
-}
-
-
+      });
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .login {
@@ -62,7 +89,7 @@ export default {
     padding: 20px;
     background-color: rgba(248, 246, 246, 0.68);
     border-radius: 8px;
-    box-shadow: 3px 2px 2px 1px rgba(255, 255, 255, .35);
+    box-shadow: 3px 2px 2px 1px rgba(255, 255, 255, 0.35);
     position: absolute;
     top: 55%;
     left: 68%;
@@ -74,7 +101,6 @@ export default {
     }
 
     :deep {
-
       .el-form-item__label {
         width: 100px;
         color: #000;
