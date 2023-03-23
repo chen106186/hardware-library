@@ -23,7 +23,7 @@
             v-for="item in categoryList"
             :key="item.id"
             :value="item.id"
-            :label="item.name"
+            :label="item.categories"
           >
           </el-option>
         </el-select>
@@ -169,110 +169,10 @@ export default {
   data() {
     return {
       activeNames: ["1"],
-      originCollapseList: [
-        {
-          id: "hl1",
-          title: "All",
-          tableData: [
-            {
-              name: "10 CH ADC",
-              available: "4",
-              total: "5",
-              image: require("../assets/404.jpg"),
-              imagePath: "assets/test-image.png",
-              category: "Adafruit",
-              website: "http://www.hobbytronics.co.uk/adc-i2c-slace",
-              detail: `Components in web development are reusable pieces of code that allow you to create complex and interactive user interfaces. They are a key concept in modern front-end frameworks like React, Angular, and Vue.js, and play a crucial role in building scalable and maintainable applications.Components are designed to encapsulate logic and state, making it easier to reuse and test code. They also help to break down complex applications into smaller, more manageable parts. With components, developers can build complex UI`,
-              dueDate: "01 May 2023",
-              fileList: [],
-              pdfFilePath: "",
-              identifies: [
-                { uniqueID: "1459", status: "Available" },
-                { uniqueID: "1462", status: "Missing" },
-                { uniqueID: "1915", status: "Available" },
-              ],
-            },
-            {
-              name: "test test elliapseelliapseelliapseelliapse",
-              available: "10",
-              image: require("../assets/404.jpg"),
-              detail: "hi come on",
-              dueDate: "2023-05-02",
-            },
-            {
-              name: "dddd",
-              available: "6",
-              image: require("../assets/404.jpg"),
-              detail: "",
-            },
-            {
-              name: "ddemo",
-              available: "6",
-              image: require("../assets/404.jpg"),
-              detail: "",
-            },
-            {
-              name: "guss",
-              available: "5",
-              image: require("../assets/404.jpg"),
-              detail: "",
-            },
-          ],
-        },
-        {
-          id: "hl2",
-          title: "Adafruit",
-          tableData: [
-            {
-              name: "10 CH ADC",
-              available: "4",
-              image: require("../assets/404.jpg"),
-              detail: "hahahha you jdsjdjfajdcxncdh dsdioidosjadkj",
-            },
-          ],
-        },
-        {
-          id: "hl3",
-          title: "Arduino",
-          tableData: [
-            {
-              name: "dddd",
-              available: "6",
-              image: require("../assets/404.jpg"),
-              detail: "",
-            },
-            {
-              name: "test",
-              available: "10",
-              image: require("../assets/404.jpg"),
-              detail: "",
-            },
-          ],
-        },
-        {
-          id: "hl4",
-          title: "Audio",
-          tableData: [
-            {
-              name: "ddemo",
-              available: "6",
-              image: require("../assets/404.jpg"),
-              detail: "",
-            },
-            {
-              name: "guss",
-              available: "5",
-              image: require("../assets/404.jpg"),
-              detail: "",
-            },
-          ],
-        },
-      ],
-      collapseList: [],
-      gridCount: "",
-      category: "hl1",
+      category: "",
       categoryList: [],
       dataList: [],
+      oriDataList: [],
       input: "",
       detailDlgVisible: false,
       detailData: { name: "", description: "", image: "" },
@@ -288,16 +188,12 @@ export default {
       const role = sessionStorage.getItem("role");
       return role === "1";
     },
+    gridCount() {
+      return this.dataList.length ? 4 : 1;
+    },
   },
   components: { ComponentDialog, InfoCard },
   created() {
-    this.collapseList = JSON.parse(JSON.stringify(this.originCollapseList));
-    this.categoryList = this.originCollapseList.map((v, idx) => ({
-      id: "hl" + (idx + 1),
-      name: v.title,
-      tableData: v.tableData,
-    }));
-    this.filterList();
     this.getPageData();
   },
   methods: {
@@ -318,7 +214,6 @@ export default {
             status: it.statusInfo,
           };
         });
-        console.log(this.adminDetailData.identifies);
       });
     },
     //insertCart
@@ -326,6 +221,7 @@ export default {
       let params = {
         componentUserCart: data,
       };
+      selectDate;
       api.insertCart(params).then((res) => {});
     },
 
@@ -334,35 +230,51 @@ export default {
       api.deleteContent(params).then((res) => {});
     },
     getHomeInfo() {
-      api.findContentInfo().then((res) => {
-        this.dataList = res.map((it) => {
+      let params = {
+        name: this.input,
+      };
+      api.findContentInfo(params).then((res) => {
+        const list = res.map((it) => {
           return {
             id: it.id,
             name: it.name,
             available: it.count,
             image: it.image,
+            categories: it.categories,
           };
         });
+        this.categoryList = res.map((v) => ({
+          id: v.id,
+          categories: v.categories,
+        }));
+        this.categoryList.unshift({ id: "", categories: "All" });
+        this.oriDataList = list;
+        this.dataList = list;
         this.selectDate = res.map((it) => it.createtime);
+        this.loading = false;
       });
     },
     filterList() {
-      this.gridCount = this.dataList.length ? 1 : 4;
+      if (this.category) {
+        const listCopy = JSON.parse(JSON.stringify(this.oriDataList));
+        this.dataList = listCopy.filter((f) => f.id === this.category);
+      } else {
+        this.dataList = this.oriDataList;
+      }
     },
     doSearch() {
-      this.loading = true;
       this.dataList = [];
 
+      this.getHomeInfo();
+
       // const baseData = JSON.parse(JSON.stringify(this.originCollapseList));
-      const categoryData = dataList.find((v) => v.id === this.category);
-      const listData = categoryData.tableData;
-      if (this.input) {
-        this.dataList = listData.filter((v) => v.name.includes(this.input));
-      } else {
-        this.dataList = listData;
-      }
-      this.gridCount = this.dataList.length ? 4 : 1;
-      this.loading = false;
+      // const categoryData = dataList.find((v) => v.id === this.category);
+      // const listData = categoryData.tableData;
+      // if (this.input) {
+      //   this.dataList = listData.filter((v) => v.name.includes(this.input));
+      // } else {
+      //   this.dataList = listData;
+      // }
     },
     handleChange(val) {
       console.log(val);

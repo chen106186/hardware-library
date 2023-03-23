@@ -236,7 +236,10 @@ export default {
       this.getfindList();
     },
     getfindList() {
-      api.findList().then((res) => {
+      let params = {
+        name: this.searchTxt,
+      };
+      api.findList(params).then((res) => {
         this.oriTableData = res.map((it) => {
           return {
             fullName: it.userName,

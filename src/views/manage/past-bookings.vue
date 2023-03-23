@@ -4,7 +4,7 @@
       <h3>Past Bookings</h3>
       <div class="search">
         <el-input
-          placeholder="Search by PersonID / identifier / Component"
+          placeholder="Search by Component"
           v-model="searchTxt"
         ></el-input>
         <el-button type="primary" @click="handleSearch">Search</el-button>
@@ -103,7 +103,10 @@ export default {
       this.getfindList();
     },
     getfindList() {
-      api.findList().then((res) => {
+      let params = {
+        name: this.searchTxt,
+      };
+      api.findList(params).then((res) => {
         this.oriTableData = res.map((it) => {
           return {
             fullName: it.userName,
@@ -118,6 +121,7 @@ export default {
       });
     },
     handleSearch() {
+      this.getfindList();
       const tableData = JSON.parse(JSON.stringify(this.oriTableData));
       const txt = this.searchTxt.trim();
       this.tableData = tableData.filter(
