@@ -1,11 +1,11 @@
 <template>
   <el-dialog
-    class="admin-dialog"
-    width="1000px"
-    top="6vh"
-    center
-    :visible.sync="dVisible"
-    @close="handleAdminClose"
+      class="admin-dialog"
+      width="1000px"
+      top="6vh"
+      center
+      :visible.sync="dVisible"
+      @close="handleAdminClose"
   >
     <div slot="title">
       <span class="edit-title" contenteditable="true">
@@ -21,88 +21,71 @@
       Ctrl + LeftClick or RightClick to follow link instead of editing it.
     </div>
     <el-form
-      ref="adminDetailForm"
-      :model="adminDetailData"
-      class="edit-form"
-      label-width="120px"
+        ref="adminDetailForm"
+        :model="adminDetailData"
+        class="edit-form"
+        label-width="120px"
     >
       <el-form-item class="detail-item">
         <el-input
-          type="textarea"
-          :autosize="{ minRows: 4, maxRows: 6 }"
-          v-model="adminDetailData.detail"
+            type="textarea"
+            :autosize="{ minRows: 4, maxRows: 6 }"
+            v-model="adminDetailData.description"
         ></el-input>
       </el-form-item>
       <el-form-item label="Available:">
         <el-input
-          style="width: 100px"
-          v-model="adminDetailData.available"
+            style="width: 100px"
+            v-model="adminDetailData.available"
         ></el-input>
         <span class="at">/</span>
         <el-input
-          style="width: 100px"
-          v-model="adminDetailData.total"
+            style="width: 100px"
+            v-model="adminDetailData.total"
         ></el-input>
       </el-form-item>
       <el-form-item label="categories:">
         <el-input
-          style="width: 300px"
-          v-model="adminDetailData.categories"
+            style="width: 300px"
+            v-model="adminDetailData.categories"
         ></el-input>
         <span class="cs">(comma separateed)</span>
       </el-form-item>
       <el-form-item label="Websites:">
         <el-input
-          style="width: 300px"
-          v-model="adminDetailData.websites"
+            style="width: 300px"
+            v-model="adminDetailData.websites"
         ></el-input>
       </el-form-item>
-      <el-form-item label="Image file path:">
-        <el-input
-          style="width: 300px"
-          v-model="adminDetailData.imagePath"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="Change Image:">
-        <el-upload
-          class="upload-demo"
-          :multiple="false"
-          action=""
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :before-remove="beforeRemove"
-          :on-exceed="handleExceed"
-          :file-list="adminDetailData.fileList"
-        >
-          <el-button size="small" type="primary">click to upload</el-button>
-          <div slot="tip" class="el-upload__tip">
-            Select your file,the 'image file path' will then be updated and you
-            can save changes below.
-          </div>
-        </el-upload>
-      </el-form-item>
+      <!--      <el-form-item label="Image file path:">-->
+      <!--        <el-input-->
+      <!--          style="width: 300px"-->
+      <!--          v-model="adminDetailData.imagePath"-->
+      <!--        ></el-input>-->
+      <!--      </el-form-item>-->
       <el-form-item label="Identifies:">
         <el-table
-          :data="adminDetailData.identifies"
-          style="width: 100%"
-          :header-cell-style="headerCellStyle"
+            :data="adminDetailData.identifies"
+            style="width: 100%"
+            :header-cell-style="headerCellStyle"
         >
-          <el-table-column prop="componentId" label="componentId">
+          <el-table-column prop="uniqueID" label="uniqueID">
           </el-table-column>
-          <el-table-column prop="status" label="status"> </el-table-column>
+          <el-table-column prop="statusEn" label="status"></el-table-column>
           <el-table-column label="operate">
             <template slot-scope="scope">
+              <!--              <el-button-->
+              <!--                @click="handleEditClick(scope.row)"-->
+              <!--                type="warning"-->
+              <!--                size="small"-->
+              <!--                >edit</el-button-->
+              <!--              >-->
               <el-button
-                @click="handleEditClick(scope.row)"
-                type="warning"
-                size="small"
-                >edit</el-button
-              >
-              <el-button
-                type="danger"
-                size="small"
-                @click="handleRemoveClick(scope.row)"
-                >remove</el-button
+                  type="danger"
+                  size="small"
+                  @click="handleRemoveClick(scope.row)"
+              >remove
+              </el-button
               >
             </template>
           </el-table-column>
@@ -111,10 +94,11 @@
       <el-form-item label="New UniqueID:">
         <el-input style="width: 180px" v-model="componentId"></el-input>
         <el-button
-          style="margin-left: 20px"
-          type="primary"
-          @click="handleAddUniqueID(componentId)"
-          >Add</el-button
+            style="margin-left: 20px"
+            type="primary"
+            @click="handleAddUniqueID(componentId)"
+        >Add
+        </el-button
         >
       </el-form-item>
     </el-form>
@@ -125,86 +109,90 @@
 </template>
 
 <script>
-import api from "@/api/index";
+import api from '@/api/index'
+
 export default {
-  name: "ComponentDialog",
+  name: 'ComponentDialog',
   props: {
     cVisible: false,
     cData: {
       type: Object,
       default() {
-        return { fileList: [], pdfFilePath: "", identifies: [] };
-      },
-    },
+        return { fileList: [], pdfFilePath: '', identifies: [], total: 0 }
+      }
+    }
   },
   data() {
     return {
       adminDlgVisible: false,
-      componentId: "",
-    };
+      componentId: ''
+    }
   },
   computed: {
     dVisible: {
       get() {
-        return this.cVisible;
+        return this.cVisible
       },
       set(val) {
-        this.$emit("update:cVisible", val);
-      },
+        this.$emit('update:cVisible', val)
+      }
     },
     adminDetailData() {
-      return this.cData;
-    },
+      return this.cData
+    }
   },
   mounted() {
     //   this.getPageData();
   },
   methods: {
     goSave() {
-      this.getUpdate(this.adminDetailData);
-      this.dVisible = false;
-      this.adminDetailData.identifies = this.adminDetailData.identifies;
+      this.getUpdate(this.adminDetailData)
+      this.dVisible = false
     },
-
     getUpdate(adminDetailData) {
-      api.updateContent(adminDetailData).then((res) => {});
+      api.updateContent(adminDetailData).then((res) => {
+        this.$message.success('update succcess')
+        this.$emit('save')
+      })
     },
     insertInventory(data) {
-      api.insertInventory(data).then((res) => {});
+      api.insertInventory(data).then((res) => {
+      })
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      console.log(file, fileList)
     },
     handlePreview(file) {
-      console.log(file);
+      console.log(file)
     },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `limit 1 file but you selected ${files.length} files`
-      );
+          `limit 1 file but you selected ${files.length} files`
+      )
     },
     beforeRemove(file, fileList) {
-      return this.$confirm(`Are you sure remove ${file.name}？`);
+      return this.$confirm(`Are you sure remove ${file.name}？`)
     },
     headerCellStyle() {
-      return { backgroundColor: "#2A323F", color: "#fff", padding: 0 };
+      return { backgroundColor: '#2A323F', color: '#fff', padding: 0 }
     },
-    handleEditClick() {},
+    handleEditClick() {
+    },
     handleRemoveClick({ uniqueID }) {
-      this.$confirm("Are you sure to remove this item?", "warning", {
-        type: "warning",
+      this.$confirm('Are you sure to remove this item?', 'warning', {
+        type: 'warning'
       })
-        .then((_) => {
-          const idIndex = this.adminDetailData.identifies.findIndex(
-            (v) => v.uniqueID === uniqueID
-          );
-          this.adminDetailData.identifies.splice(idIndex, 1);
-          this.adminDetailData.available = +this.adminDetailData.available - 1;
-          this.adminDetailData.total = +this.adminDetailData.total - 1;
-        })
-        .catch((_) => {
-          console.log("cancel");
-        });
+          .then((_) => {
+            const idIndex = this.adminDetailData.identifies.findIndex(
+                (v) => v.uniqueID === uniqueID
+            )
+            this.adminDetailData.identifies.splice(idIndex, 1)
+            this.adminDetailData.available = +this.adminDetailData.available - 1
+            this.adminDetailData.total = +this.adminDetailData.total - 1
+          })
+          .catch((_) => {
+            console.log('cancel')
+          })
     },
     handleAddUniqueID(componentId) {
       // let data = {
@@ -217,26 +205,25 @@ export default {
       // data.componentId = componentId;
       // this.insertInventory(data);
       if (!this.componentId.trim()) {
-        this.$message.error("UniqueID can not be empty!");
-        return;
+        this.$message.error('UniqueID can not be empty!')
+        return
       }
       this.adminDetailData.identifies.push({
-        componentId: this.componentId,
-        status: "Available",
-      });
-      this.adminDetailData.identifies = this.adminDetailData.identifies;
-      this.adminDetailData.available = +this.adminDetailData.available + 1;
-      this.adminDetailData.total = +this.adminDetailData.total + 1;
-      this.uniqueID = "";
+        uniqueID: this.componentId,
+        serialNumber: this.componentId,
+        status: 1,
+        statusEn: 'Available'
+      })
+      this.adminDetailData.available = +this.adminDetailData.available + 1
+      this.adminDetailData.total = +this.adminDetailData.total + 1
+      this.componentId = ''
     },
 
     handleAdminClose() {
-      // document.getElementsByClassName("edit-form")[0].scrollTop = 0;
-      this.uniqueID = this.uniqueID;
-      this.$emit("update:cVisible", false);
-    },
-  },
-};
+      this.$emit('update:cVisible', false)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

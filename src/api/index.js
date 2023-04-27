@@ -4,7 +4,7 @@ export default {
 	//组件相关
 	findContentInfo: (params) => GET('/content/findContentInfo', params),
 	findDetailsById: (params) => GET('/content/findDetailsById', params),
-	insertContent: (params) => POST('/content/insertContent', params),
+	insertContent: data => POST('/content/insertContent', data),
 	updateContent: (params) => POST('/content/updateContent/' + params.id, params),
 	deleteContent: (params) => POST('/content/deleteContent/' + params.id, params),
 

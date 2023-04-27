@@ -1,9 +1,9 @@
 <template>
   <div class="home">
     <h3 class="homeScript">
-      Welcome to the Computer Science Hardware Library<br /><br />
+      Welcome to the Computer Science Hardware Library<br/><br/>
       <span v-if="!isAdmin"
-        >You will be able to see your reserved and collected items below,
+      >You will be able to see your reserved and collected items below,
         propose new items and look through our list of components to reserve
         what you may wish.
       </span>
@@ -16,37 +16,38 @@
       </span>
     </h3>
     <div class="homeSearch">
-      <h3>Components<br /></h3>
+      <h3>Components<br/></h3>
       <div class="filter">
         <el-select v-model="category" @change="filterList">
           <el-option
-            v-for="item in categoryList"
-            :key="item.id"
-            :value="item.id"
-            :label="item.categories"
+              v-for="item in categoryList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.categories"
           >
           </el-option>
         </el-select>
         <el-input v-model="input" placeholder="Components"></el-input>
         <el-button type="success" size="mini" @click="doSearch"
-          >search</el-button
+        >search
+        </el-button
         >
       </div>
       <div
-        class="homeComponents"
-        :style="{ '--grid': gridCount }"
-        v-loading="loading"
+          class="homeComponents"
+          :style="{ '--grid': gridCount }"
+          v-loading="loading"
       >
         <InfoCard
-          v-for="(item, index) in dataList"
-          :key="index"
-          :info="item"
-          @show="showDetail"
-          @del="handleDelete"
+            v-for="(item, index) in dataList"
+            :key="index"
+            :info="item"
+            @show="showDetail"
+            @del="handleDelete"
         />
         <el-empty
-          v-if="dataList && !dataList.length"
-          description="No Results"
+            v-if="dataList && !dataList.length"
+            description="No Results"
         ></el-empty>
       </div>
     </div>
@@ -68,18 +69,15 @@
           </div>
           <el-divider direction="vertical"></el-divider>
           <div class="right-info">
-            <img class="right-img" :src="detailData.image" />
+            <img class="right-img" src="@/assets/fm.jpg"/>
             <div class="action">
               <span>return date:</span>
               <el-date-picker
-                value-format="yyyy-MM-dd"
-                class="select-date"
-                v-model="selectDate"
-                size="small"
-              ></el-date-picker>
-              <el-button type="warning" size="small" @click="addCart"
-                >Add to cart</el-button
-              >
+                  value-format="yyyy-MM-dd"
+                  class="select-date"
+                  v-model="selectDate"
+                  size="small"></el-date-picker>
+              <el-button type="warning" size="small" @click="addCart">Add to cart</el-button>
             </div>
           </div>
           <div class="website"><span class="ws-p">website</span> :dasdas</div>
@@ -154,85 +152,97 @@
       </span>
     </el-dialog>-->
     <ComponentDialog
-      :c-data="adminDetailData"
-      @goSave="getadminDetailData"
-      :c-visible.sync="adminDlgVisible"
+        :c-data="adminDetailData"
+        @save="getPageData"
+        :c-visible.sync="adminDlgVisible"
     ></ComponentDialog>
   </div>
 </template>
 
 <script>
-import InfoCard from "@/components/InfoCard.vue";
-import ComponentDialog from "@/views/components/ComponentDialog.vue";
-import api from "@/api/index";
+import InfoCard from '@/components/InfoCard.vue'
+import ComponentDialog from '@/views/components/ComponentDialog.vue'
+import api from '@/api/index'
+
 export default {
   data() {
     return {
-      activeNames: ["1"],
-      category: "",
+      activeNames: ['1'],
+      category: '',
       categoryList: [],
       dataList: [],
       oriDataList: [],
-      input: "",
+      input: '',
       detailDlgVisible: false,
-      detailData: { name: "", description: "", image: "" },
-      selectDate: "",
+      detailData: { name: '', description: '', image: '' },
+      selectDate: '',
       loading: false,
       adminDlgVisible: false,
-      adminDetailData: { fileList: [], pdfFilePath: "", identifies: [] },
-      uniqueID: "",
-    };
+      adminDetailData: { fileList: [], pdfFilePath: '', identifies: [] },
+      uniqueID: ''
+    }
   },
   computed: {
     isAdmin() {
-      const role = sessionStorage.getItem("role");
-      return role === "1";
+      const role = sessionStorage.getItem('role')
+      return role === '1'
     },
     gridCount() {
-      return this.dataList.length ? 4 : 1;
-    },
+      return this.dataList.length ? 4 : 1
+    }
   },
   components: { ComponentDialog, InfoCard },
   created() {
-    this.getPageData();
+    this.getPageData()
   },
   methods: {
     getPageData() {
-      this.getHomeInfo();
+      this.getHomeInfo()
     },
     getadminDetailData(adminDetailData) {
-      this.adminDetailData = adminDetailData;
+      this.adminDetailData = adminDetailData
     },
-    findDetailsById(id) {
-      let params = {
-        id,
-      };
-      api.findDetailsById(params).then((res) => {
-        this.adminDetailData.identifies = res.componentInventories.map((it) => {
-          return {
-            uniqueID: it.componentId,
-            status: it.statusInfo,
-          };
-        });
-      });
+    findDetailsById(data) {
+
+      this.detailData = data
+      this.adminDetailData = data
+      let params = { id: data.id }
+      api.findDetailsById(params)
+          .then((res) => {
+            this.adminDetailData = { ...res }
+            let { identifies } = res
+            this.adminDetailData.identifies = identifies.map((it) => {
+              return {
+                serialNumber: it.serialNumber,
+                uniqueID: it.serialNumber,
+                status: it.statusInfo,
+                statusEn: it.statusInfo === 1 ? 'Available' : 'Unavailable'
+              }
+            })
+            const av = this.adminDetailData.identifies.filter(v => +v.status === 1)
+            this.adminDetailData.available = av.length
+            this.adminDetailData.total = identifies.length
+          })
     },
     //insertCart
     insertCart(data) {
       let params = {
-        componentUserCart: data,
-      };
-      selectDate;
-      api.insertCart(params).then((res) => {});
+        componentUserCart: data
+      }
+      selectDate
+      api.insertCart(params).then((res) => {
+      })
     },
 
     deleteContent() {
-      let params = {};
-      api.deleteContent(params).then((res) => {});
+      let params = {}
+      api.deleteContent(params).then((res) => {
+      })
     },
     getHomeInfo() {
       let params = {
-        name: this.input,
-      };
+        name: this.input
+      }
       api.findContentInfo(params).then((res) => {
         const list = res.map((it) => {
           return {
@@ -240,32 +250,32 @@ export default {
             name: it.name,
             available: it.count,
             image: it.image,
-            categories: it.categories,
-          };
-        });
+            categories: it.categories
+          }
+        })
         this.categoryList = res.map((v) => ({
           id: v.id,
-          categories: v.categories,
-        }));
-        this.categoryList.unshift({ id: "", categories: "All" });
-        this.oriDataList = list;
-        this.dataList = list;
-        this.selectDate = res.map((it) => it.createtime);
-        this.loading = false;
-      });
+          categories: v.categories
+        }))
+        this.categoryList.unshift({ id: '', categories: 'All' })
+        this.oriDataList = list
+        this.dataList = list
+        this.selectDate = res.map((it) => it.createtime)
+        this.loading = false
+      })
     },
     filterList() {
       if (this.category) {
-        const listCopy = JSON.parse(JSON.stringify(this.oriDataList));
-        this.dataList = listCopy.filter((f) => f.id === this.category);
+        const listCopy = JSON.parse(JSON.stringify(this.oriDataList))
+        this.dataList = listCopy.filter((f) => f.id === this.category)
       } else {
-        this.dataList = this.oriDataList;
+        this.dataList = this.oriDataList
       }
     },
     doSearch() {
-      this.dataList = [];
+      this.dataList = []
 
-      this.getHomeInfo();
+      this.getHomeInfo()
 
       // const baseData = JSON.parse(JSON.stringify(this.originCollapseList));
       // const categoryData = dataList.find((v) => v.id === this.category);
@@ -277,75 +287,72 @@ export default {
       // }
     },
     handleChange(val) {
-      console.log(val);
+      console.log(val)
     },
     goPropose() {
-      this.$router.push("/propose/index");
+      this.$router.push('/propose/index')
     },
     showDetail(data) {
-      let id = data.id;
-      this.findDetailsById(id);
-      this.detailData = data;
-      this.adminDetailData = data;
-      // this.adminDetailData = this.adminDetailData;
+      this.adminDetailData = data
+      this.findDetailsById(data)
       this.isAdmin
-        ? (this.adminDlgVisible = true)
-        : (this.detailDlgVisible = true);
+          ? (this.adminDlgVisible = true)
+          : (this.detailDlgVisible = true)
     },
     addCart() {
-      let data = {};
-      data.userId = 1;
-      data.componentId = 1;
-      data.id = 1;
-      this.insertCart(data);
+      let data = {}
+      data.userId = 1
+      data.componentId = 1
+      data.id = 1
+      this.insertCart(data)
       if (!this.selectDate) {
-        this.$message.error("Please select return date!");
-        return;
+        this.$message.error('Please select return date!')
+        return
       }
-      this.detailData.dueDate = this.selectDate;
-      let localCartList = localStorage.getItem("cart-list");
+      this.detailData.dueDate = this.selectDate
+      let localCartList = localStorage.getItem('cart-list')
       if (
-        !localCartList ||
-        localCartList === "undefined" ||
-        !localCartList.length
+          !localCartList ||
+          localCartList === 'undefined' ||
+          !localCartList.length
       ) {
-        localCartList = [];
+        localCartList = []
       } else {
-        localCartList = JSON.parse(localCartList);
+        localCartList = JSON.parse(localCartList)
       }
       const findItem = localCartList.find(
-        (v) => v.name === this.detailData.name
-      );
+          (v) => v.name === this.detailData.name
+      )
       if (findItem) {
-        findItem.quantity++;
-        findItem.dueDate = this.selectDate;
+        findItem.quantity++
+        findItem.dueDate = this.selectDate
       } else {
-        localCartList.push(this.detailData);
+        localCartList.push(this.detailData)
       }
-      localStorage.setItem("cart-list", JSON.stringify(localCartList));
+      localStorage.setItem('cart-list', JSON.stringify(localCartList))
       this.$message({
-        type: "success",
-        message: "Add cart success",
-        showClose: true,
-      });
+        type: 'success',
+        message: 'Add cart success',
+        showClose: true
+      })
     },
     handleDelete(item) {
-      const _self = this;
-      this.$confirm("Are you sure to remove this components?", "warning", {
-        type: "warning",
+      this.$confirm('Are you sure to remove this components?', 'warning', {
+        type: 'warning'
       })
-        .then((_) => {
-          const findIndex = _self.dataList.findIndex(
-            (v) => v.name === item.name
-          );
-          _self.dataList.splice(findIndex, 1);
-        })
-        .catch((_) => {
-          console.log("cancel");
-        });
-    },
-  },
-};
+          .then((_) => {
+            api.deleteContent({ id: item.id })
+                .then(() => {
+                  this.$message.success('remove success')
+                  this.getHomeInfo()
+                })
+          })
+          .catch((_) => {
+            console.log('cancel')
+          })
+    }
+  }
+}
 </script>
 <style scoped lang="scss">
 .home {

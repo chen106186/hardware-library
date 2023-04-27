@@ -1,6 +1,6 @@
 <template>
     <div class="card-container" @click="emitDetail">
-        <img class="card-img" :src="info.image" alt="">
+        <img class="card-img" src="@/assets/fm.jpg" alt="">
         <div class="card-name">
             {{ info.name }}
         </div>
@@ -61,7 +61,7 @@ export default {
 
     .card-img {
         width: 195px;
-        height: auto;
+        height: 160px;
     }
 
     .card-name {
